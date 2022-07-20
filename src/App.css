@@ -1,38 +1,95 @@
-.App {
-  text-align: center;
+html {
+  box-sizing: border-box;
+}
+/* *, *:before, *:after {
+  box-sizing: inherit;
+} */
+
+
+.sokoban-grid {
+  position: absolute;
+  display: grid;
+  transform: rotateX(60deg) rotateY(0deg) rotateZ(-45deg);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.sokoban-main {
+  position: relative;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.sokoban-cell {
+  background-color: forestgreen;
+  outline: 1px red solid;/*не забудь убрать*/
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.sokoban-empty {
+  background-color: azure;
 }
 
-.App-link {
-  color: #61dafb;
+.sokoban-targetcell {
+  background-color: grey;
+  outline: 1px red solid;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sokoban-cell-highlight {
+  background-color: gold;
+  outline: 1px red solid;
+}
+
+.sokoban-targetcell-highlight {
+  background-color: greenyellow;
+  outline: 1px red solid;
+}
+
+.sokoban-box {
+  position: absolute;
+}
+
+.sokoban-worker {
+  position: absolute;
+}
+
+.sokoban-movepad {
+  position: absolute;
+  display: grid;
+  grid-template-areas: 
+  "up  right"
+  "left  down";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  bottom: 0;
+  right: 0;
+}
+
+.sokoban-movebutton {
+  appearance: none;
+  border: 0;
+  color: grey;
+  background-color: rgba(255, 255, 255, 0);
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}
+
+.sokoban-movebutton:hover {
+  filter: drop-shadow(3px 5px 2px rgba(49, 75, 221, 0.4));
+}
+
+.sokoban-movebutton:active {
+  color: rgb(90, 90, 90);
+  filter: drop-shadow(3px 5px 2px rgba(37, 67, 236, 0.4));
+}
+
+.sokoban-button-up{
+  grid-area: up;
+}
+
+.sokoban-button-down{
+  grid-area: down;
+}
+.sokoban-button-midpoint{
+  grid-area: midpoint;
+}
+.sokoban-button-right{
+  grid-area: right;
+}
+.sokoban-button-left{
+  grid-area: left;
 }

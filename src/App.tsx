@@ -1,26 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {levels} from './levels'
+import {Sokoban} from './Sokoban';
 
-function App() {
+const boardSize = Math.min(document.documentElement.clientWidth, document.documentElement.clientHeight);// / 1.41;
+
+export function App() {
+  const level = levels[3];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  <div>
+    Сторона {boardSize}
+    <div style={{height: 500, backgroundColor: "cyan"}} ></div>
+    <Sokoban boardSize={boardSize} {...level} />
+    <div style={{height: 500, backgroundColor: "cornflowerblue"}} ></div>
+  </div>
   );
 }
 
-export default App;
