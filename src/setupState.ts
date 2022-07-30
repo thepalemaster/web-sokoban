@@ -7,15 +7,10 @@ type GameCell = {
     y: number
 }
 
-type FieldInfo = {        
-    fieldID: number,
-    width: number,
-    heigth: number,
-}
-
 export type MoveResult = {
     box: null | number,
-    worker: null | Direction
+    status: "nomove"|"normal"|"reset"
+    worker: Direction
 }
 
 type Solution = {
@@ -24,19 +19,20 @@ type Solution = {
 }
 
 export type GameState = {
-    fieldInfo: FieldInfo,
+    initalLevel: Level,
     lastMove: MoveResult,
     workerIndex: number,
     field: Array<GameCell>,
-    solution: Solution
+    solution: Solution,
+    prevStates: Array<GameState>
 
 }
 
 export type GameAction = {
-    type: Direction
+    type: Direction | "undo" | "reset"
 }
 
-export function setupState (state: GameState, action: GameAction) {
+export function setupState (state: GameState, action: GameAction): GameState {
     switch(action.type) {
         case "N":
         case "E":
@@ -45,23 +41,29 @@ export function setupState (state: GameState, action: GameAction) {
             if(checkPossibleMove(state, action.type)) {
                 return setupDirection(state, action.type);
             } else {
-                return {...state, lastMove: {worker: null, box: null}}
+                return {...state, lastMove: {box: null, status: "nomove", worker: action.type}};
+                //return state;
             }
             break;
+        case "reset":
+            console.log(initState(state.initalLevel))
+            return initState(state.initalLevel);
+        case "undo":
+            const prevState = state.prevStates.pop();
+            if (prevState) {
+                prevState.lastMove.status = "reset";
+                return prevState;
+            } else {
+                return state;
+            }
     }
     return state;
 }
 
-let levelID = 0;
-
 export function initState (initalLevel: Level) {
     const state: GameState = {
-        fieldInfo: {
-            fieldID: ++levelID,
-            width: initalLevel.field.width,
-            heigth: initalLevel.field.heigth
-        },
-        lastMove: {worker: null, box: null},
+        initalLevel,
+        lastMove: {worker: initalLevel.worker.direction, box: null, status: "reset"},
         field: initalLevel.field.cells.map((item, index)=>(
             {
                 type: item,
@@ -75,7 +77,8 @@ export function initState (initalLevel: Level) {
         solution: {
             solved: false,//function???
             targets: []
-        }
+        },
+        prevStates: []
     }
     state.solution.targets = state.field.reduce<Array<number>>(
         (acc, item, index)=>{
@@ -92,6 +95,7 @@ export function initState (initalLevel: Level) {
 function setupDirection (state: GameState, direction: Direction): GameState{
     let newWorkerIndex = state.workerIndex;
     let newBoxIndex;
+    state.prevStates.push(state);
     switch (direction) {
         case "E":
             newWorkerIndex++;
@@ -102,12 +106,12 @@ function setupDirection (state: GameState, direction: Direction): GameState{
             newBoxIndex = newWorkerIndex - 1;
             break;
         case "N":
-            newWorkerIndex -= state.fieldInfo.width;
-            newBoxIndex = newWorkerIndex - state.fieldInfo.width;
+            newWorkerIndex -= state.initalLevel.field.width;
+            newBoxIndex = newWorkerIndex - state.initalLevel.field.width;
             break;
         case "S":
-            newWorkerIndex += state.fieldInfo.width;
-            newBoxIndex = newWorkerIndex + state.fieldInfo.width;
+            newWorkerIndex += state.initalLevel.field.width;
+            newBoxIndex = newWorkerIndex + state.initalLevel.field.width;
             break;
     }
     if (state.field[newWorkerIndex].box !== null) {
@@ -118,8 +122,6 @@ function setupDirection (state: GameState, direction: Direction): GameState{
         cell.box = null;
         newField[newWorkerIndex] = cell;
         newField[newBoxIndex] = boxCell;
-        /*newField[newBoxIndex].box = newField[newWorkerIndex].box;
-        newField[newWorkerIndex].box = null;*/
         if (state.solution.targets.every(item=>newField[item].box !== null)) {
             console.log("win-win");
         }
@@ -128,6 +130,7 @@ function setupDirection (state: GameState, direction: Direction): GameState{
                 ...state,
                 lastMove: {
                     worker: direction,
+                    status: "normal",
                     box: newField[newBoxIndex].box
                 },
                 workerIndex: newWorkerIndex,
@@ -137,7 +140,7 @@ function setupDirection (state: GameState, direction: Direction): GameState{
     } else {
         return {
             ...state, 
-            lastMove: {worker: direction, box: null},
+            lastMove: {worker: direction, status: "normal", box: null},
             workerIndex:  newWorkerIndex
         }
     }
@@ -152,7 +155,7 @@ function checkPossibleMove(state: GameState, direction: Direction) {
     switch (direction) {
         case "E":
             x++;
-            if (x > state.fieldInfo.width) return false;
+            if (x > state.initalLevel.field.width) return false;
             boxX += 2;
             newIndex++;
             break;
@@ -166,22 +169,22 @@ function checkPossibleMove(state: GameState, direction: Direction) {
             if (y === 1) return false;
             y--;
             boxY -= 2;
-            newIndex -= state.fieldInfo.width;
+            newIndex -= state.initalLevel.field.width;
             break;
         case "S":
             y++;
-            if (y > state.fieldInfo.heigth) return false;
+            if (y > state.initalLevel.field.heigth) return false;
             boxY += 2;
-            newIndex += state.fieldInfo.width;
+            newIndex += state.initalLevel.field.width;
             break;
     }
     const cell = state.field[newIndex];
     if (cell.type === " ") return false;
     if (cell.box !== null) {
-        if (boxX < 1 || boxX > state.fieldInfo.width ||
-            boxY < 1 || boxY > state.fieldInfo.heigth) return false;
+        if (boxX < 1 || boxX > state.initalLevel.field.width ||
+            boxY < 1 || boxY > state.initalLevel.field.heigth) return false;
 
-        const boxCell = state.field[toIndex(boxX, boxY, state.fieldInfo.width)];
+        const boxCell = state.field[toIndex(boxX, boxY, state.initalLevel.field.width)];
         if (invalidCell(boxCell)) return false;
     }
     return true;

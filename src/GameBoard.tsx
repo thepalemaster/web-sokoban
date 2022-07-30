@@ -36,7 +36,7 @@ export function GameBoard (props: GameBoardProps) {
         width: props.size
     }
     return (
-        <div className='sokoban-grid' style={boardStyle} onClick={props.onClick}>
+        <div className='sokoban-grid isomeric' style={boardStyle} onClick={props.onClick}>
             {divCells}
         </div>
     )

@@ -1,10 +1,11 @@
 import React from "react";
-import {GameAction} from "./setupState";
-import midpoint from './midpoint2.svg';
+import { Direction } from "./levels";
+import { GameAction } from "./setupState";
 
 type MoveButtonsProps = {
-  size: number;
-  dispatcher: React.Dispatch<GameAction>;
+  size: number,
+  dispatcher: React.Dispatch<GameAction>,
+  additionalAction: ()=>void
 };
 
 export function MoveButtons(props: MoveButtonsProps) {
@@ -12,66 +13,49 @@ export function MoveButtons(props: MoveButtonsProps) {
     width: props.size,
     height: props.size,
   };
+  const clickHandler = (action: Direction) => {
+    props.dispatcher({ type: action });
+    props.additionalAction();
+  }
   return (
-    <div style={moveButtonsStyle} className="sokoban-movepad">
+    <div style={moveButtonsStyle} className="sokoban-movepad isomeric">
       <button
-        onClick={() => {props.dispatcher({ type: "N" });}} 
+        onClick={()=>{clickHandler("N")}}
         className="sokoban-movebutton sokoban-button-up"
-      > 
+      >
         {arrows[1]}
       </button>
-      <button 
-        onClick={() => {props.dispatcher({ type: "S" });}}
+      <button
+        onClick={()=>{clickHandler("S")}}
         className="sokoban-movebutton sokoban-button-down"
       >
         {arrows[2]}
       </button>
-      <button 
-        onClick={() => {props.dispatcher({ type: "E" });}}
+      <button
+        onClick={()=>{clickHandler("W")}}
         className="sokoban-movebutton sokoban-button-right"
       >
         {arrows[0]}
       </button>
       <button
-        onClick={() => {props.dispatcher({ type: "W" });}}
+        onClick={() => {clickHandler("E")}}
         className="sokoban-movebutton sokoban-button-left"
       >
         {arrows[3]}
       </button>
-      <div className="sokoban-movebutton sokoban-button-midpoint">
-        {midpoint1}
-      </div>
     </div>
   );
 }
 
-const arrows = ["", "scale(-1, 1)", "scale(1, -1)", "scale(-1, -1)"].map(
-  item => (
+const arrows = ["scale(-1, -1)", "rotate(-90)", "rotate(90)", ""].map(
+  (item) => (
     <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    transform={item}
-  >
-    <polygon points="3 11 22 2 13 21 11 13 3 11" />
-  </svg>
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      transform={item}
+      viewBox="0 0 1000 1000"
+    >
+      <path d="M511.1,858.1l465.5-333c8.4-6,13.4-15.8,13.4-26.1c0-0.1,0-0.1,0-0.1c0-10.4-5.1-20.1-13.5-26.2L511,141.8c-9.8-7-22.7-7.9-33.4-2.3c-10.7,5.4-17.4,16.5-17.4,28.6v155.7l-418.1,0c-17.8,0-32.1,14.4-32.1,32.2L10,644c0,17.8,14.4,32.1,32.2,32.2h418V832c0,12,6.8,23,17.5,28.6C488.4,866.1,501.3,865.1,511.1,858.1z"/>
+    </svg>
   )
-)
-
-const midpoint1 = (
-  <svg
-     fill="currentColor"
-     stroke="currentColor"
-     viewBox="0 0 410 410"
-     stroke-width="1"
-  >
-    <path
-       d="M 307.63729,205 350.14995,123.95808 205,147.69427 59.850052,123.95808 102.36271,205 59.850052,286.04192 205,262.30573 350.14995,286.04192 Z m -120.3385,9.88316 c -9.76045,-5.44958 -9.76045,-14.31674 0,-19.76632 9.76044,-5.44958 25.64198,-5.44958 35.40242,0 9.76045,5.44958 9.76045,14.31674 0,19.76632 -9.76044,5.44958 -25.64198,5.44958 -35.40242,0 z"
-    />
-  </svg>
-  
-)
+);

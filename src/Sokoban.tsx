@@ -5,6 +5,7 @@ import {GameObjects} from './GameObjects';
 import {setupState, initState, getStateCoordX, getStateCoordY, toIndex} from './setupState';
 import {GameBoard} from './GameBoard'
 import {MoveButtons} from './MoveButtons';
+import {CommandButtons} from './CommandButtons';
 import {offsetBoxToBase} from './BoxImage';
 import {DestinationPos, getDirection, adjacentCellList} from './pathFinder';
 import {Highlight, HighlightObject, checkHighlighte, getPathWithBox, getPath} from './gameObjectsHelpers';
@@ -17,8 +18,8 @@ export function Sokoban(props: SokobanProps) {
     const [target, setTarget] = useState<DestinationPos>(null);
     const [highlightedCell, setHighlightedCell] = useState<Highlight>(null);
     const [index, setIndex] = useState(0);
-    const maxBoardSize= Math.max(state.fieldInfo.heigth, state.fieldInfo.width);
     const mainBox = useRef<HTMLDivElement>(null);
+    const maxBoardSize= Math.max(state.initalLevel.field.heigth, state.initalLevel.field.width);
 
     useEffect(()=>{
         const {x, y} = state.field[state.workerIndex];
@@ -57,8 +58,12 @@ export function Sokoban(props: SokobanProps) {
             default:
                 return;
         }
-        setHighlightedCell(null);
         event.preventDefault();
+        clearPath();
+    }
+
+    const clearPath = () => {
+        setHighlightedCell(null);
         setTarget(null);
         setIndex(0);
     }
@@ -106,7 +111,7 @@ export function Sokoban(props: SokobanProps) {
         const targetX = getStateCoordX(x, y, step, maxBoardSize);
         const targetY = getStateCoordY(x, y, step, maxBoardSize);
         console.log(targetX, targetY);
-        const boxCell = state.field[toIndex(targetX, targetY, state.fieldInfo.width)];
+        const boxCell = state.field[toIndex(targetX, targetY, state.initalLevel.field.width)];
         if (boxCell.box === null) return;
         const adjacentCells: HighlightObject = adjacentCellList(state, {x: targetX, y: targetY});
         setHighlightedCell({entry: {x: targetX, y: targetY}, directions: adjacentCells});
@@ -121,15 +126,15 @@ export function Sokoban(props: SokobanProps) {
         }
         event.stopPropagation()
         event.preventDefault()
-        setTarget(null);
-        setIndex(0);
+        clearPath();
     }
     const stl = {height: props.boardSize / 1.41, width: props.boardSize * 1.41}
     return (
         <div className="sokoban-main" style={stl} ref={mainBox} tabIndex={0} onKeyDown={keyArrowHandler}>
             <GameBoard size={props.boardSize} highlight={highlightedCell} {...props.field} onClick={mouseHandler} />
             <GameObjects workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
-            <MoveButtons dispatcher={dispatch} size={step * 3}/>
+            <MoveButtons dispatcher={dispatch} size={step * 4} additionalAction={clearPath}/>
+            <CommandButtons dispatcher={dispatch} size={step * 2}/>
         </div>
     )
 }

@@ -11,28 +11,28 @@ export function adjacentCellList (state: GameState, position: Position) {
         "W": 0,
         "E": 0
     }
-    const index = toIndex(position.x, position.y, state.fieldInfo.width);
+    const index = toIndex(position.x, position.y, state.initalLevel.field.width);
     const cell = state.field[state.workerIndex];
-    let stop = Math.trunc(index / state.fieldInfo.width);
+    let stop = Math.trunc(index / state.initalLevel.field.width);
     if (position.y > 1 && checkPath(state, {...position, y: position.y + 1}, [{ x: cell.x, y: cell.y }])) {
-        for (let i = 1; i <= stop && !invalidCell(state.field[index - state.fieldInfo.width * i]); i++) {
+        for (let i = 1; i <= stop && !invalidCell(state.field[index - state.initalLevel.field.width * i]); i++) {
             result.N++;
         }
     }
-    stop = state.fieldInfo.heigth - stop - 1;
-    if (position.y < state.fieldInfo.heigth && checkPath(state, { ...position, y: position.y - 1 }, [{ x: cell.x, y: cell.y }])) {
-        for (let i = 1; i <= stop && !invalidCell(state.field[index + state.fieldInfo.width * i]); i++) {
+    stop = state.initalLevel.field.heigth - stop - 1;
+    if (position.y < state.initalLevel.field.heigth && checkPath(state, { ...position, y: position.y - 1 }, [{ x: cell.x, y: cell.y }])) {
+        for (let i = 1; i <= stop && !invalidCell(state.field[index + state.initalLevel.field.width * i]); i++) {
             result.S++;
         }
     }
-    stop = (index) % state.fieldInfo.width;
+    stop = (index) % state.initalLevel.field.width;
     if (position.x > 1 && checkPath(state, { ...position, x: position.x + 1 }, [{ x: cell.x, y: cell.y }])) {
         for (let i = 1; i <= stop && !invalidCell(state.field[index - i]); i++) {
             result.W++;
         }
     }
-    stop = state.fieldInfo.width - stop - 1;
-    if (position.x < state.fieldInfo.width && checkPath(state, { ...position, x: position.x - 1 }, [{ x: cell.x, y: cell.y }])) {
+    stop = state.initalLevel.field.width - stop - 1;
+    if (position.x < state.initalLevel.field.width && checkPath(state, { ...position, x: position.x - 1 }, [{ x: cell.x, y: cell.y }])) {
         for (let i = 1; i <= stop && !invalidCell(state.field[index + i]); i++) {
             result.E++;
         }
@@ -94,9 +94,9 @@ function getPossibleMoves (state: GameState, target: Position, current: Position
     return possibleMoves;
 
     function addNewMove (newMove: Position) {
-        if (newMove.x < 1 || newMove.x > state.fieldInfo.width || 
-            newMove.y < 1 || newMove.y > state.fieldInfo.heigth) return;
-        const index = toIndex(newMove.x, newMove.y, state.fieldInfo.width);
+        if (newMove.x < 1 || newMove.x > state.initalLevel.field.width || 
+            newMove.y < 1 || newMove.y > state.initalLevel.field.heigth) return;
+        const index = toIndex(newMove.x, newMove.y, state.initalLevel.field.width);
         const cell = state.field[index];
         if (invalidCell(cell)) return;
         if(path.some(item => equalPositions(item, cell))) return;
