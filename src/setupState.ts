@@ -30,6 +30,11 @@ export type GameState = {
 
 export type GameAction = {
     type: Direction | "undo" | "reset"
+} | NewLevelAction
+
+type NewLevelAction = {
+    type: "new",
+    payload: Level
 }
 
 export function setupState (state: GameState, action: GameAction): GameState {
@@ -42,12 +47,12 @@ export function setupState (state: GameState, action: GameAction): GameState {
                 return setupDirection(state, action.type);
             } else {
                 return {...state, lastMove: {box: null, status: "nomove", worker: action.type}};
-                //return state;
             }
             break;
         case "reset":
             console.log(initState(state.initalLevel))
             return initState(state.initalLevel);
+            break;
         case "undo":
             const prevState = state.prevStates.pop();
             if (prevState) {
@@ -56,6 +61,10 @@ export function setupState (state: GameState, action: GameAction): GameState {
             } else {
                 return state;
             }
+            break;
+        case "new":
+            return initState(action.payload);
+            break;
     }
     return state;
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {useState, useReducer} from 'react';
-import {Level} from './levels';
+import {levels, Level} from './levels';
 import {GameObjects} from './GameObjects';
 import {setupState, initState, getStateCoordX, getStateCoordY, toIndex} from './setupState';
 import {GameBoard} from './GameBoard'
@@ -10,11 +10,17 @@ import {offsetBoxToBase} from './BoxImage';
 import {DestinationPos, getDirection, adjacentCellList} from './pathFinder';
 import {Highlight, HighlightObject, checkHighlighte, getPathWithBox, getPath} from './gameObjectsHelpers';
 
-export type SokobanProps = Level & {boardSize: number};
+import {updateUI, initStateUI} from './sokobanReducer';
+import { LevelChooser } from './LevelChooser';
+
+export type SokobanProps = {boardSize: number};
 
 export function Sokoban(props: SokobanProps) {
-    const step = props.boardSize / 1.41 / (2 * Math.max(props.field.heigth, props.field.width));
-    const [state, dispatch] = useReducer(setupState, props, initState);
+    const [levelIndex, setLevelIndex] = useState(2);
+    const currentLevel = levels[levelIndex];
+    const step = props.boardSize / 1.41 / (2 * Math.max(currentLevel.field.heigth, currentLevel.field.width));
+    const [state, dispatch] = useReducer(setupState, levels[2], initState);
+    const [stateUI, handlerFn] = useReducer(updateUI, state, initStateUI);
     const [target, setTarget] = useState<DestinationPos>(null);
     const [highlightedCell, setHighlightedCell] = useState<Highlight>(null);
     const [index, setIndex] = useState(0);
@@ -128,11 +134,17 @@ export function Sokoban(props: SokobanProps) {
         event.preventDefault()
         clearPath();
     }
+
+    const chooseHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch({type:"new", payload: levels[+event.target.value]})
+        setLevelIndex(+event.target.value);
+    }
     const stl = {height: props.boardSize / 1.41, width: props.boardSize * 1.41}
     return (
         <div className="sokoban-main" style={stl} ref={mainBox} tabIndex={0} onKeyDown={keyArrowHandler}>
-            <GameBoard size={props.boardSize} highlight={highlightedCell} {...props.field} onClick={mouseHandler} />
-            <GameObjects workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
+            <LevelChooser levels={levels} chooseFn={chooseHandler} size={step}/>
+            <GameBoard size={props.boardSize} highlight={highlightedCell} {...currentLevel.field} onClick={mouseHandler} />
+            <GameObjects levelID={levelIndex} workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
             <MoveButtons dispatcher={dispatch} size={step * 4} additionalAction={clearPath}/>
             <CommandButtons dispatcher={dispatch} size={step * 2}/>
         </div>

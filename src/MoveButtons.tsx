@@ -21,25 +21,25 @@ export function MoveButtons(props: MoveButtonsProps) {
     <div style={moveButtonsStyle} className="sokoban-movepad isomeric">
       <button
         onClick={()=>{clickHandler("N")}}
-        className="sokoban-movebutton sokoban-button-up"
+        className="sokoban-button sokoban-button-up"
       >
         {arrows[1]}
       </button>
       <button
         onClick={()=>{clickHandler("S")}}
-        className="sokoban-movebutton sokoban-button-down"
+        className="sokoban-button sokoban-button-down"
       >
         {arrows[2]}
       </button>
       <button
         onClick={()=>{clickHandler("W")}}
-        className="sokoban-movebutton sokoban-button-right"
+        className="sokoban-button sokoban-button-right"
       >
         {arrows[0]}
       </button>
       <button
         onClick={() => {clickHandler("E")}}
-        className="sokoban-movebutton sokoban-button-left"
+        className="sokoban-button sokoban-button-left"
       >
         {arrows[3]}
       </button>
@@ -50,7 +50,6 @@ export function MoveButtons(props: MoveButtonsProps) {
 const arrows = ["scale(-1, -1)", "rotate(-90)", "rotate(90)", ""].map(
   (item) => (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
       transform={item}
       viewBox="0 0 1000 1000"
@@ -59,3 +58,5 @@ const arrows = ["scale(-1, -1)", "rotate(-90)", "rotate(90)", ""].map(
     </svg>
   )
 );
+
+//      xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import {levels} from './levels'
 import {Sokoban} from './Sokoban';
