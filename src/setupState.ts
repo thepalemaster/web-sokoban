@@ -1,4 +1,10 @@
-import {Level, Direction, Cell} from "./levels";
+import {Highlight, getPathWithBox} from "./gameObjectsHelpers";
+import {Level, Direction, Cell, levels} from "./levels";
+import {DestinationPos, adjacentCellList, Position} from "./pathFinder";
+
+import {HighlightObject, getPath} from './gameObjectsHelpers'
+
+
 
 type GameCell = {
     type: Cell,
@@ -6,6 +12,12 @@ type GameCell = {
     x: number,
     y: number
 }
+
+type EffectUI = null | {
+    path: DestinationPos,
+    index: number,
+    next: ()=> Position | null
+} | Highlight
 
 export type MoveResult = {
     box: null | number,
@@ -19,6 +31,7 @@ type Solution = {
 }
 
 export type GameState = {
+    effectUI: EffectUI,
     initalLevel: Level,
     lastMove: MoveResult,
     workerIndex: number,
@@ -29,12 +42,32 @@ export type GameState = {
 }
 
 export type GameAction = {
-    type: Direction | "undo" | "reset"
-} | NewLevelAction
+    type: Direction | "undo" | "reset" | "noeffect"
+} | NewLevelAction | BoxAction | PathAction | PushAction
 
 type NewLevelAction = {
     type: "new",
-    payload: Level
+    payload: number
+}
+
+type BoxAction = {
+    type: "box",
+    payload: {x: number, y: number}
+}
+
+type PushAction = {
+    type: "push",
+    payload: {x: number, y: number}
+}
+
+type PathAction = {
+    type: "path",
+    payload: {x: number, y: number}
+}
+
+export function isHighlight (effect: EffectUI): effect is Highlight {
+    if (!effect) return false;
+    return "entry" in effect;
 }
 
 export function setupState (state: GameState, action: GameAction): GameState {
@@ -50,8 +83,7 @@ export function setupState (state: GameState, action: GameAction): GameState {
             }
             break;
         case "reset":
-            console.log(initState(state.initalLevel))
-            return initState(state.initalLevel);
+            return createState(state.initalLevel);
             break;
         case "undo":
             const prevState = state.prevStates.pop();
@@ -65,12 +97,61 @@ export function setupState (state: GameState, action: GameAction): GameState {
         case "new":
             return initState(action.payload);
             break;
+        case "box":
+            const index = toIndex(action.payload.x, action.payload.y, state.initalLevel.field.width);
+            const boxCell = state.field[index];
+            if (boxCell.box === null) return state;
+            const adjacentCells: HighlightObject = adjacentCellList(state, action.payload);
+            console.log(state.effectUI)
+            return {...state, effectUI: {entry: action.payload, directions: adjacentCells}};
+            break;
+        case "path":
+            const activePath = {
+                path: getPath(state, action.payload),
+                index: 1,
+                next(){
+                    if (this.path && this.path.length > this.index) {
+                        return this.path[this.index++]
+                    } else {
+                        return null;
+                    }
+                }
+            }
+            return {...state, effectUI: activePath};
+        case "noeffect": 
+            return {...state, effectUI: null}
+            break;
+        case "push":
+            if(isHighlight(state.effectUI)) {
+                const activePath = {
+                    path: getPathWithBox(state, action.payload, state.effectUI),
+                    index: 1,
+                    next(){
+                        if (this.path && this.path.length > this.index) {
+                            return this.path[this.index++]
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+                return {...state, effectUI: activePath};
+            } else {
+                return state;
+            }
+            break;
+        default:
+            return state;
     }
-    return state;
 }
 
-export function initState (initalLevel: Level) {
+
+export function initState (levelID: number) {
+    return createState(levels[levelID]);
+}
+
+function createState(initalLevel: Level) {
     const state: GameState = {
+        effectUI: null,
         initalLevel,
         lastMove: {worker: initalLevel.worker.direction, box: null, status: "reset"},
         field: initalLevel.field.cells.map((item, index)=>(
@@ -101,7 +182,7 @@ export function initState (initalLevel: Level) {
     return state;
 }
 
-function setupDirection (state: GameState, direction: Direction): GameState{
+function setupDirection(state: GameState, direction: Direction): GameState{
     let newWorkerIndex = state.workerIndex;
     let newBoxIndex;
     state.prevStates.push(state);
@@ -192,7 +273,6 @@ function checkPossibleMove(state: GameState, direction: Direction) {
     if (cell.box !== null) {
         if (boxX < 1 || boxX > state.initalLevel.field.width ||
             boxY < 1 || boxY > state.initalLevel.field.heigth) return false;
-
         const boxCell = state.field[toIndex(boxX, boxY, state.initalLevel.field.width)];
         if (invalidCell(boxCell)) return false;
     }

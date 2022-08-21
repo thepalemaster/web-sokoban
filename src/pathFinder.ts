@@ -40,7 +40,6 @@ export function adjacentCellList (state: GameState, position: Position) {
     return result;
 }
 
-
 export function checkPath (state: GameState, target: Position, path: Array<Position>): boolean  {
     const current = path.at(-1);
     if(!current) return false;

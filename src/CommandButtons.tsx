@@ -14,7 +14,7 @@ export function CommandButtons(props: CommandButtonsProps) {
     height: props.size * 1.5,
   };
   return (
-    <div style={buttonsStyle} className="sokoban-commands">
+    <div className="sokoban-commands">
       <button className="sokoban-button"
         onClick={() => {setHelpVisibility(true)}}
       >

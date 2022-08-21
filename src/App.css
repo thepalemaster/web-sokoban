@@ -54,6 +54,8 @@ html {
 
 .sokoban-movepad {
   position: absolute;
+  width: 30vh;
+  height: 30vh;
   display: grid;
   grid-template-areas: 
     " . up  ."
@@ -90,24 +92,39 @@ html {
   grid-gap: 0.2rem;
   bottom: 0.5rem;
   left: 0.5rem;
+  width: 8vh;
+  height: 24vh;
 }
 
 .sokoban-chooser {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+  width: 15vh;
+  height: 15vh;
 }
 
 .sokoban-chooser input{
   appearance: none;
 }
 
-.sokoban-chooser label{
-  border: 1px solid red;
+.sokoban-chooser label {
+  display: block;
+}
+.sokoban-chooser div {
+  background-color: darkcyan;
 }
 
-.sokoban-chooser input:hover{
+.sokoban-chooser input:hover + div{
   background-color: coral;
+}
+
+.sokoban-chooser input:checked + div{
+  background-color: hotpink;
+}
+
+.sokoban-chooser input:active + div {
+  background-color: crimson;
 }
 
 .sokoban-button {

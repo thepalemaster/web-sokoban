@@ -1,8 +1,7 @@
-import React, {useEffect, useRef} from 'react';
-import {useState, useReducer} from 'react';
+import React, {useEffect, useRef, useState, useReducer} from 'react';
 import {levels, Level} from './levels';
 import {GameObjects} from './GameObjects';
-import {setupState, initState, getStateCoordX, getStateCoordY, toIndex} from './setupState';
+import {setupState, initState, getStateCoordX, getStateCoordY, isHighlight ,toIndex, GameState} from './setupState';
 import {GameBoard} from './GameBoard'
 import {MoveButtons} from './MoveButtons';
 import {CommandButtons} from './CommandButtons';
@@ -10,37 +9,28 @@ import {offsetBoxToBase} from './BoxImage';
 import {DestinationPos, getDirection, adjacentCellList} from './pathFinder';
 import {Highlight, HighlightObject, checkHighlighte, getPathWithBox, getPath} from './gameObjectsHelpers';
 
-import {updateUI, initStateUI} from './sokobanReducer';
 import { LevelChooser } from './LevelChooser';
 
-export type SokobanProps = {boardSize: number};
+export type SokobanProps = {boardSize: number, height: number, width: number};
 
 export function Sokoban(props: SokobanProps) {
-    const [levelIndex, setLevelIndex] = useState(2);
-    const currentLevel = levels[levelIndex];
-    const step = props.boardSize / 1.41 / (2 * Math.max(currentLevel.field.heigth, currentLevel.field.width));
-    const [state, dispatch] = useReducer(setupState, levels[2], initState);
-    const [stateUI, handlerFn] = useReducer(updateUI, state, initStateUI);
-    const [target, setTarget] = useState<DestinationPos>(null);
-    const [highlightedCell, setHighlightedCell] = useState<Highlight>(null);
-    const [index, setIndex] = useState(0);
-    const mainBox = useRef<HTMLDivElement>(null);
+    const [state, dispatch] = useReducer(setupState, 0, initState);
     const maxBoardSize= Math.max(state.initalLevel.field.heigth, state.initalLevel.field.width);
+    const step = props.boardSize / 1.41 / (2 * Math.max(state.initalLevel.field.heigth, state.initalLevel.field.width));
+    const mainBox = useRef<HTMLDivElement>(null);
 
     useEffect(()=>{
         const {x, y} = state.field[state.workerIndex];
-        if(target === null || 
-            x !== target[index]?.x || y !== target[index].y) {
+        if(!state.effectUI || !("path" in state.effectUI)) {
             return;
         }
+        const target = state.effectUI
         const timeoutID = setTimeout(()=>{
-            if (target.length <= index + 1) {
-                setIndex(0);
-                setTarget(null);
+            const pos = target.next()
+            if (!pos) {
                 return;
             }
-            dispatch({type: getDirection(target[index], target[index + 1])});
-            setIndex(i=>i+1);
+            dispatch({type: getDirection({x, y}, pos)});
         }, 300);
         return ()=> {
             clearTimeout(timeoutID);
@@ -65,13 +55,8 @@ export function Sokoban(props: SokobanProps) {
                 return;
         }
         event.preventDefault();
-        clearPath();
-    }
-
-    const clearPath = () => {
-        setHighlightedCell(null);
-        setTarget(null);
-        setIndex(0);
+        event.stopPropagation();
+        dispatch({type: "noeffect"});
     }
 
     const mouseHandler = (event: React.MouseEvent) => {
@@ -86,15 +71,13 @@ export function Sokoban(props: SokobanProps) {
         } 
         const targetX = getStateCoordX(x, y, step, maxBoardSize);
         const targetY = getStateCoordY(x, y, step, maxBoardSize);
-        console.log(targetX, targetY);
-        console.log("coords", x, y)
-        if (checkHighlighte({x: targetX, y: targetY}, highlightedCell)) {
-            setTarget(getPathWithBox(state,{x:targetX, y:targetY}, highlightedCell));
+        const target = {x: targetX, y: targetY};
+        if (isHighlight(state.effectUI) && checkHighlighte(target, state.effectUI)) {
+            console.log("HIGH!!", state)
+            dispatch({type: "push", payload: target})            
         } else {
-            setTarget(getPath(state, {x:targetX, y:targetY}));           
+            dispatch({type:"path", payload: target})
         }
-        setHighlightedCell(null);
-        setIndex (0);
     }
 
     const mouseBoxHandler = (event: React.MouseEvent) => {
@@ -116,13 +99,7 @@ export function Sokoban(props: SokobanProps) {
         y = y - event.nativeEvent.offsetY + offsetBoxY;
         const targetX = getStateCoordX(x, y, step, maxBoardSize);
         const targetY = getStateCoordY(x, y, step, maxBoardSize);
-        console.log(targetX, targetY);
-        const boxCell = state.field[toIndex(targetX, targetY, state.initalLevel.field.width)];
-        if (boxCell.box === null) return;
-        const adjacentCells: HighlightObject = adjacentCellList(state, {x: targetX, y: targetY});
-        setHighlightedCell({entry: {x: targetX, y: targetY}, directions: adjacentCells});
-        setTarget(null);
-        setIndex(0);    
+        dispatch({type: "box", payload: {x: targetX, y: targetY}}) 
     }
 
     const mouseWorkerHandler = (event: React.MouseEvent) => {
@@ -132,21 +109,33 @@ export function Sokoban(props: SokobanProps) {
         }
         event.stopPropagation()
         event.preventDefault()
-        clearPath();
     }
 
-    const chooseHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch({type:"new", payload: levels[+event.target.value]})
-        setLevelIndex(+event.target.value);
-    }
-    const stl = {height: props.boardSize / 1.41, width: props.boardSize * 1.41}
+    const stl = getSizeBox(props.width, props.height);
+    const highlight = isHighlight(state.effectUI) ? state.effectUI : null;
     return (
         <div className="sokoban-main" style={stl} ref={mainBox} tabIndex={0} onKeyDown={keyArrowHandler}>
-            <LevelChooser levels={levels} chooseFn={chooseHandler} size={step}/>
-            <GameBoard size={props.boardSize} highlight={highlightedCell} {...currentLevel.field} onClick={mouseHandler} />
-            <GameObjects levelID={levelIndex} workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
-            <MoveButtons dispatcher={dispatch} size={step * 4} additionalAction={clearPath}/>
+            <LevelChooser levels={levels} chooseFn={dispatch}/>
+            <GameBoard size={props.boardSize} highlight={highlight} {...state.initalLevel.field} onClick={mouseHandler} />
+            <GameObjects workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
+            <MoveButtons dispatcher={dispatch} size={step * 4}/>
             <CommandButtons dispatcher={dispatch} size={step * 2}/>
         </div>
     )
 }
+
+
+function getSizeBox (width: number, height: number) {
+    if (width > height) {
+        return {
+            height: height / 1.41,
+            width: height * 1.41
+        }
+    } else {
+        return {
+            height: width / 2,
+            width: width / 1.41
+        }
+    }
+}
+

@@ -5,7 +5,6 @@ import { GameAction } from "./setupState";
 type MoveButtonsProps = {
   size: number,
   dispatcher: React.Dispatch<GameAction>,
-  additionalAction: ()=>void
 };
 
 export function MoveButtons(props: MoveButtonsProps) {
@@ -15,10 +14,10 @@ export function MoveButtons(props: MoveButtonsProps) {
   };
   const clickHandler = (action: Direction) => {
     props.dispatcher({ type: action });
-    props.additionalAction();
+    props.dispatcher({type: "noeffect"});
   }
   return (
-    <div style={moveButtonsStyle} className="sokoban-movepad isomeric">
+    <div className="sokoban-movepad isomeric">
       <button
         onClick={()=>{clickHandler("N")}}
         className="sokoban-button sokoban-button-up"

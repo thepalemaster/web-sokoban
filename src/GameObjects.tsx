@@ -7,7 +7,6 @@ import { WorkerObject } from "./WorkerObject";
 type GameObjectsProps = {
   state: GameState;
   step: number;
-  levelID: number;
   boxHandler: React.MouseEventHandler<HTMLDivElement>;
   workerHandler: React.MouseEventHandler<HTMLDivElement>;
 };
@@ -40,12 +39,12 @@ type ViewState = {
 type MoveStep = -1 | 1;
 
 export function GameObjects(props: GameObjectsProps) {
-  const prevProps = useRef({level: props.levelID, step: props.step, index: props.state.workerIndex});
+  const prevProps = useRef({level: props.state.initalLevel, step: props.step, index: props.state.workerIndex});
   const viewState = useRef(initViewState(props));
-  if (prevProps.current.step !== props.step || prevProps.current.level !== props.levelID) { 
+  if (prevProps.current.step !== props.step || prevProps.current.level !== props.state.initalLevel) { 
     viewState.current = initViewState(props);
     prevProps.current.step = props.step;
-    prevProps.current.level = props.levelID;
+    prevProps.current.level = props.state.initalLevel;
   } else {
     switch (props.state.lastMove.status) {
       case "nomove":
@@ -98,70 +97,6 @@ export function GameObjects(props: GameObjectsProps) {
     </div>
   );
 }
-
-
-
-
-
-export function GameObjects1(props: GameObjectsProps) {
-  const [prevProps, updateProps] = useState({level: props.levelID, step: props.step});
-  const [state, setState] = useState(initViewState(props))
-  if (prevProps.step !== props.step || prevProps.level !== props.levelID) {
-    setState(initViewState(props));
-    updateProps({level: props.levelID, step: props.step});
-  } else {
-    switch (props.state.lastMove.status) {
-      case "nomove":
-        const worker = { ...state.viewOrder[
-          state.viewWorkerIndex
-        ] as WorkerItem, direction: props.state.lastMove.worker};
-        const viewOrder = [...state.viewOrder];
-        viewOrder[state.viewWorkerIndex] = worker;
-        setState({...state, viewOrder})
-        break;
-      case "normal":
-        setState(getStateWithChanges(props, state));
-        break;
-      case "reset":
-        setState(initViewState(props));
-        break;
-    }
-  }
-  return (
-    <div className="sokoban-objects">
-      {state.viewOrder.map((item) => {
-        switch (item.type) {
-          case "box":
-            return (
-              <BoxObject
-                key={item.id}
-                x={item.x}
-                y={item.y}
-                placed={item.placed}
-                scale={props.step}
-                onClick={props.boxHandler}
-              />
-            );
-            break;
-          case "worker":
-            return (
-              <WorkerObject
-                key={-1}
-                x={item.x}
-                y={item.y}
-                direction={item.direction}
-                scale={props.step}
-                onClick={props.workerHandler}
-              />
-            );
-            break;
-        }
-      })}
-    </div>
-  );
-}
-
-
 
 function initViewState(props: GameObjectsProps) {
   const maxSize = Math.max(
@@ -230,27 +165,6 @@ function applyChanges(props: GameObjectsProps, viewState: ViewState) {
     );
   }
   applyViewOrder(props, viewState);
-}
-
-function getStateWithChanges(props: GameObjectsProps, viewState: ViewState) {
-  const newState = {...viewState, reviousStateIndex: props.state.workerIndex};
-  const worker = {...viewState.viewOrder[viewState.viewWorkerIndex] as WorkerItem,
-    direction: props.state.lastMove.worker};
-  [worker.x, worker.y] = newCoordinates(
-    props.state.lastMove.worker,
-    props.step,
-    worker
-  );
-  if (props.state.lastMove.box !== null) {
-    const box = {...viewState.orderByID[props.state.lastMove.box]};
-    [box.x, box.y] = newCoordinates(
-      props.state.lastMove.worker,
-      props.step,
-      box
-    );
-  }
-  applyViewOrder(props, newState);
-  return newState;
 }
 
 function applyViewOrder(props: GameObjectsProps, viewState: ViewState) {

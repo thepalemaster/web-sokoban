@@ -1,13 +1,11 @@
 
 import {GameState} from './setupState';
 import {Direction} from './levels';
-
 import {Position, pathFinder} from './pathFinder';
 
 export type HighlightObject = {
   [K in Direction]: number
 }
-
 
 export type Highlight = {entry: Position, directions: HighlightObject}|null;
 
@@ -34,7 +32,7 @@ export function getPath(state: GameState, target: Position) {
 export function getPathWithBox(state: GameState, target: Position, highlight: Highlight) {
   if (!highlight) return null;
   let boxMove: Array<Position> = [];
-  const pushPosition = highlight.entry;
+  const pushPosition = {...highlight.entry};
   if (target.x === highlight.entry.x) {
       let delta = target.y - highlight.entry.y;
       if (delta > 0) {
@@ -64,7 +62,5 @@ export function getPathWithBox(state: GameState, target: Position, highlight: Hi
   }
   const result = getPath(state, pushPosition);
   result?.push(...boxMove);
-  console.log(result);
-  console.log(boxMove);
   return result;
 }
