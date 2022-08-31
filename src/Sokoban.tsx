@@ -1,17 +1,17 @@
-import React, {useEffect, useRef, useState, useReducer} from 'react';
-import {levels, Level} from './levels';
+import React, {useEffect, useRef, useReducer} from 'react';
 import {GameObjects} from './GameObjects';
-import {setupState, initState, getStateCoordX, getStateCoordY, isHighlight ,toIndex, GameState} from './setupState';
+import {setupState, initState, getStateCoordX, getStateCoordY, isHighlight} from './setupState';
 import {GameBoard} from './GameBoard'
+import {StatisticView} from './StatisticView';
 import {MoveButtons} from './MoveButtons';
 import {CommandButtons} from './CommandButtons';
 import {offsetBoxToBase} from './BoxImage';
-import {DestinationPos, getDirection, adjacentCellList} from './pathFinder';
-import {Highlight, HighlightObject, checkHighlighte, getPathWithBox, getPath} from './gameObjectsHelpers';
+import {getDirection} from './pathFinder';
+import {checkHighlighte} from './gameObjectsHelpers';
+import {LevelChooser} from './LevelChooser';
+import {SolveNotifer} from './SolveNotifer';
 
-import { LevelChooser } from './LevelChooser';
-
-export type SokobanProps = {boardSize: number, height: number, width: number};
+export type SokobanProps = {boardSize: number, height: number, width: number, onSolved: ()=>void};
 
 export function Sokoban(props: SokobanProps) {
     const [state, dispatch] = useReducer(setupState, 0, initState);
@@ -73,7 +73,6 @@ export function Sokoban(props: SokobanProps) {
         const targetY = getStateCoordY(x, y, step, maxBoardSize);
         const target = {x: targetX, y: targetY};
         if (isHighlight(state.effectUI) && checkHighlighte(target, state.effectUI)) {
-            console.log("HIGH!!", state)
             dispatch({type: "push", payload: target})            
         } else {
             dispatch({type:"path", payload: target})
@@ -115,11 +114,13 @@ export function Sokoban(props: SokobanProps) {
     const highlight = isHighlight(state.effectUI) ? state.effectUI : null;
     return (
         <div className="sokoban-main" style={stl} ref={mainBox} tabIndex={0} onKeyDown={keyArrowHandler}>
-            <LevelChooser levels={levels} chooseFn={dispatch}/>
+	        <StatisticView moves={state.moves} pushes={state.pushes} />
+            <LevelChooser chooseFn={dispatch}/>
             <GameBoard size={props.boardSize} highlight={highlight} {...state.initalLevel.field} onClick={mouseHandler} />
             <GameObjects workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
             <MoveButtons dispatcher={dispatch} size={step * 4}/>
             <CommandButtons dispatcher={dispatch} size={step * 2}/>
+            <SolveNotifer dispatcher={dispatch} state={state}/>
         </div>
     )
 }

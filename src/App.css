@@ -200,3 +200,46 @@ html {
   padding-bottom: 1.2em;
   margin-bottom: 1.2em;
 }
+
+.sokoban-statistic {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.sokoban-notifer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.sokoban-notifer-message {
+  font-size: 2.5rem;
+  color: #53d9d1;
+}
+
+@keyframes notifer {
+  to {
+    color: tomato;
+    clip-path: circle(100% at 50% 50%);;
+  }
+}
+
+.sokoban-notifer-message::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  background-color: #53d9d1;
+  opacity: 0.5;
+  clip-path: circle(0% at 50% calc(50%));
+  animation: notifer 2s ease-out;
+  animation-fill-mode: forwards;
+}

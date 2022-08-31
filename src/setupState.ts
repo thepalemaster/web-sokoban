@@ -31,6 +31,8 @@ type Solution = {
 }
 
 export type GameState = {
+    moves: number,
+    pushes: number,
     effectUI: EffectUI,
     initalLevel: Level,
     lastMove: MoveResult,
@@ -102,7 +104,6 @@ export function setupState (state: GameState, action: GameAction): GameState {
             const boxCell = state.field[index];
             if (boxCell.box === null) return state;
             const adjacentCells: HighlightObject = adjacentCellList(state, action.payload);
-            console.log(state.effectUI)
             return {...state, effectUI: {entry: action.payload, directions: adjacentCells}};
             break;
         case "path":
@@ -151,6 +152,8 @@ export function initState (levelID: number) {
 
 function createState(initalLevel: Level) {
     const state: GameState = {
+        moves: 0,
+        pushes: 0,
         effectUI: null,
         initalLevel,
         lastMove: {worker: initalLevel.worker.direction, box: null, status: "reset"},
@@ -165,7 +168,7 @@ function createState(initalLevel: Level) {
         workerIndex: toIndex(initalLevel.worker.position.x, 
             initalLevel.worker.position.y, initalLevel.field.width),
         solution: {
-            solved: false,//function???
+            solved: false,
             targets: []
         },
         prevStates: []
@@ -175,6 +178,8 @@ function createState(initalLevel: Level) {
             if(item.type === "X") acc.push(index);
             return acc;
         }, []);
+        state.solution.solved = state.solution.targets
+            .every(item=>state.field[item].box !== null);
     initalLevel.boxes.forEach ((item, index) => {
         state.field[toIndex(item.position.x, item.position.y, initalLevel.field.width)].box = index;
 
@@ -185,6 +190,9 @@ function createState(initalLevel: Level) {
 function setupDirection(state: GameState, direction: Direction): GameState{
     let newWorkerIndex = state.workerIndex;
     let newBoxIndex;
+    if (state.solution.solved) {
+        return state;
+    }
     state.prevStates.push(state);
     switch (direction) {
         case "E":
@@ -212,12 +220,15 @@ function setupDirection(state: GameState, direction: Direction): GameState{
         cell.box = null;
         newField[newWorkerIndex] = cell;
         newField[newBoxIndex] = boxCell;
-        if (state.solution.targets.every(item=>newField[item].box !== null)) {
-            console.log("win-win");
-        }
         return (
             {
                 ...state,
+                moves: state.moves + 1,
+                pushes: state.pushes + 1,
+                solution: {
+                    targets: state.solution.targets,
+                    solved: state.solution.targets.every(item=>newField[item].box !== null)
+                },
                 lastMove: {
                     worker: direction,
                     status: "normal",
@@ -229,7 +240,8 @@ function setupDirection(state: GameState, direction: Direction): GameState{
         )
     } else {
         return {
-            ...state, 
+            ...state,
+            moves: state.moves + 1,
             lastMove: {worker: direction, status: "normal", box: null},
             workerIndex:  newWorkerIndex
         }
@@ -294,14 +306,6 @@ export function getStateCoordY(clientX: number, clientY: number, step:number, si
 export function getStateCoordX(clientX: number, clientY: number, step:number, size: number){
     return Math.trunc((size + (clientX - 2 * clientY) / (2 * step)) / 2 + 1);
 
-}
-
-export function getStateCoords(clientX: number, clientY: number, step:number, size: number){
-    let lineX = getStateCoordX(clientX, clientY, step, size);
-    let lineY = getStateCoordY(clientX, clientY, step, size);
-    let xx = getCoordX(lineX, lineY, step, size);
-    let yy = getCoordY(lineX, lineY, step, size);
-    console.log(clientX, xx, clientY, yy)
 }
 
 export function invalidCell (cell: GameCell) {

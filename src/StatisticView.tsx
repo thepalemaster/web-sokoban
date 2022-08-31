@@ -2,11 +2,13 @@ import React from "react";
 
 type StatisticViewProps = {
   pushes: number,
-  steps: number
+  moves: number
 }
 
-function StatisticView (props: StatisticViewProps) {
+export function StatisticView (props: StatisticViewProps) {
   return (
-    <div>{props.pushes} + {props.steps}</div>
+    <div className="sokoban-statistic">
+      pushes: {props.pushes} <br/> moves: {props.moves}
+    </div>
   )
 }
