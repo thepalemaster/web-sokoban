@@ -16,9 +16,13 @@ html {
   position: relative;
 }
 
+.sokoban-nornal-cell {
+  background-color: forestgreen;
+}
+
 .sokoban-cell {
   background-color: forestgreen;
-  outline: 1px red solid;/*не забудь убрать*/
+  box-shadow: inset 0px 0px 5px red;
 }
 
 .isomeric {
@@ -31,25 +35,24 @@ html {
 
 .sokoban-targetcell {
   background-color: grey;
-  outline: 1px red solid;
 }
 
 .sokoban-cell-highlight {
   background-color: gold;
-  outline: 1px red solid;
 }
 
 .sokoban-targetcell-highlight {
   background-color: greenyellow;
-  outline: 1px red solid;
 }
 
 .sokoban-box {
   position: absolute;
+  transition: all 0.3s linear;
 }
 
 .sokoban-worker {
   position: absolute;
+  transition: all 0.15s linear;
 }
 
 .sokoban-movepad {
@@ -125,6 +128,10 @@ html {
 
 .sokoban-chooser input:active + div {
   background-color: crimson;
+}
+
+.sokoban-chooser .solved::before {
+  content: "[*]";
 }
 
 .sokoban-button {

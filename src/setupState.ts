@@ -27,6 +27,7 @@ export type MoveResult = {
 
 type Solution = {
     solved: boolean,
+    levelID: number,
     targets: Array<number>
 }
 
@@ -147,7 +148,9 @@ export function setupState (state: GameState, action: GameAction): GameState {
 
 
 export function initState (levelID: number) {
-    return createState(levels[levelID]);
+    const newState = createState(levels[levelID]);
+    newState.solution.levelID = levelID
+    return newState
 }
 
 function createState(initalLevel: Level) {
@@ -169,6 +172,7 @@ function createState(initalLevel: Level) {
             initalLevel.worker.position.y, initalLevel.field.width),
         solution: {
             solved: false,
+            levelID: -1,
             targets: []
         },
         prevStates: []
@@ -226,7 +230,7 @@ function setupDirection(state: GameState, direction: Direction): GameState{
                 moves: state.moves + 1,
                 pushes: state.pushes + 1,
                 solution: {
-                    targets: state.solution.targets,
+                    ...state.solution,
                     solved: state.solution.targets.every(item=>newField[item].box !== null)
                 },
                 lastMove: {

@@ -11,7 +11,7 @@ import {checkHighlighte} from './gameObjectsHelpers';
 import {LevelChooser} from './LevelChooser';
 import {SolveNotifer} from './SolveNotifer';
 
-export type SokobanProps = {boardSize: number, height: number, width: number, onSolved: ()=>void};
+export type SokobanProps = {boardSize: number, height: number, width: number};
 
 export function Sokoban(props: SokobanProps) {
     const [state, dispatch] = useReducer(setupState, 0, initState);

@@ -93,16 +93,16 @@ function createCell (item: Cell|"H"|"Y") {
             return <div className='sokoban-empty'></div>;
             break;
         case "E":
-            return <div className='sokoban-cell'></div>;
+            return <div className='sokoban-normal-cell sokoban-cell'></div>;
             break;
         case "X":
-            return <div className='sokoban-targetcell'></div>;
+            return <div className='sokoban-targetcell sokoban-cell'></div>;
             break;
         case "H":
-            return <div className='sokoban-cell-highlight'></div>;
+            return <div className='sokoban-cell-highlight sokoban-cell'></div>;
             break;
         case "Y":
-            return <div className='sokoban-targetcell-highlight'></div>;
+            return <div className='sokoban-targetcell-highlight sokoban-cell'></div>;
             break;
     }
 }
