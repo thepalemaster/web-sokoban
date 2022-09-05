@@ -14,15 +14,15 @@ html {
 
 .sokoban-main {
   position: relative;
+  overflow: hidden;
 }
 
-.sokoban-nornal-cell {
-  background-color: forestgreen;
+.sokoban-normalcell {
+  background-color: gray;
 }
 
 .sokoban-cell {
-  background-color: forestgreen;
-  box-shadow: inset 0px 0px 5px red;
+  box-shadow: inset 0px 0px 1px red;
 }
 
 .isomeric {
@@ -34,7 +34,7 @@ html {
 }
 
 .sokoban-targetcell {
-  background-color: grey;
+  background-color: forestgreen;
 }
 
 .sokoban-cell-highlight {
@@ -47,12 +47,10 @@ html {
 
 .sokoban-box {
   position: absolute;
-  transition: all 0.3s linear;
 }
 
 .sokoban-worker {
   position: absolute;
-  transition: all 0.15s linear;
 }
 
 .sokoban-movepad {
@@ -90,28 +88,31 @@ html {
 .sokoban-commands {
   position: absolute;
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   grid-gap: 0.2rem;
   bottom: 0.5rem;
   left: 0.5rem;
-  width: 8vh;
-  height: 24vh;
+  width: 16vh;
+  height: 16vh;
 }
 
 .sokoban-chooser {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 15vh;
-  height: 15vh;
+  top: 0px;
+  right: 0px;
+  width: 5rem;
+  height: 5rem;
 }
 
-.sokoban-chooser input{
-  appearance: none;
+.sokoban-level-list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: space-around;
 }
 
-.sokoban-chooser label {
+/*.sokoban-chooser label {
   display: block;
 }
 .sokoban-chooser div {
@@ -131,8 +132,8 @@ html {
 }
 
 .sokoban-chooser .solved::before {
-  content: "[*]";
-}
+  content:r "[*]";
+}*/
 
 .sokoban-button {
   appearance: none;
@@ -177,7 +178,7 @@ html {
   pointer-events: visible;
 }
 
-.sokoban-help {
+.sokoban-modal-window {
   background-color: azure;
   border-radius: 5px;
   border: 2px;
@@ -189,7 +190,7 @@ html {
   padding-top: 1em;
 }
 
-.sokoban-help h2{
+.sokoban-modal-window h2{
   font-size: 1.5em;
   padding-bottom: 0.3em;
   border-bottom: 1px solid gray;
@@ -197,13 +198,13 @@ html {
   margin-bottom: 16px;
 }
 
-.sokoban-help h3{
+.sokoban-modal-window h3{
   font-size: 1.2em;
   margin-top: 24px;
   margin-bottom: 16px;
 }
 
-.sokoban-help span{
+.sokoban-modal-window span{
   padding-bottom: 1.2em;
   margin-bottom: 1.2em;
 }
@@ -232,7 +233,7 @@ html {
 @keyframes notifer {
   to {
     color: tomato;
-    clip-path: circle(100% at 50% 50%);;
+    clip-path: circle(100% at 50% 50%);
   }
 }
 

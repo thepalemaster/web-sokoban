@@ -1,10 +1,7 @@
 import {Highlight, getPathWithBox} from "./gameObjectsHelpers";
 import {Level, Direction, Cell, levels} from "./levels";
 import {DestinationPos, adjacentCellList, Position} from "./pathFinder";
-
 import {HighlightObject, getPath} from './gameObjectsHelpers'
-
-
 
 type GameCell = {
     type: Cell,

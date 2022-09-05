@@ -1,16 +1,14 @@
 import './App.css';
-import {levels} from './levels'
 import {Sokoban} from './Sokoban';
 
 
 export function App() {
-  const boardSize = Math.min(document.documentElement.clientWidth, document.documentElement.clientHeight);
+  const boardSize = Math.min(document.documentElement.clientWidth / 1.41, document.documentElement.clientHeight);
+  const mode = document.documentElement.clientWidth > document.documentElement.clientHeight ? "landscape" : "portrait"
   return (
   <div>
     Сторона {boardSize}
-    <div style={{height: 500, backgroundColor: "cyan"}} ></div>
-    <Sokoban boardSize={boardSize} width={document.documentElement.clientWidth} height={document.documentElement.clientHeight} />
-    <div style={{height: 500, backgroundColor: "cornflowerblue"}} ></div>
+    <Sokoban boardSize={boardSize} mode={mode} />
   </div>
   );
 }

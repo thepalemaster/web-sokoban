@@ -8,10 +8,11 @@ import {CommandButtons} from './CommandButtons';
 import {offsetBoxToBase} from './BoxImage';
 import {getDirection} from './pathFinder';
 import {checkHighlighte} from './gameObjectsHelpers';
-import {LevelChooser} from './LevelChooser';
 import {SolveNotifer} from './SolveNotifer';
 
-export type SokobanProps = {boardSize: number, height: number, width: number};
+type ViewMode = "landscape"|"portrait";
+
+export type SokobanProps = {boardSize: number, mode: ViewMode};
 
 export function Sokoban(props: SokobanProps) {
     const [state, dispatch] = useReducer(setupState, 0, initState);
@@ -110,12 +111,11 @@ export function Sokoban(props: SokobanProps) {
         event.preventDefault()
     }
 
-    const stl = getSizeBox(props.width, props.height);
+    const stl = getSizeBox(props.boardSize , props.mode);
     const highlight = isHighlight(state.effectUI) ? state.effectUI : null;
     return (
         <div className="sokoban-main" style={stl} ref={mainBox} tabIndex={0} onKeyDown={keyArrowHandler}>
 	        <StatisticView moves={state.moves} pushes={state.pushes} />
-            <LevelChooser chooseFn={dispatch}/>
             <GameBoard size={props.boardSize} highlight={highlight} {...state.initalLevel.field} onClick={mouseHandler} />
             <GameObjects workerHandler={mouseWorkerHandler} boxHandler={mouseBoxHandler} state={state} step={step} />
             <MoveButtons dispatcher={dispatch} size={step * 4}/>
@@ -125,18 +125,16 @@ export function Sokoban(props: SokobanProps) {
     )
 }
 
-
-function getSizeBox (width: number, height: number) {
-    if (width > height) {
+function getSizeBox (size: number, mode: ViewMode) {
+    if (mode === "landscape") {
         return {
-            height: height / 1.41,
-            width: height * 1.41
+            height: size / 1.41,
+            width: size * 1.41
         }
     } else {
         return {
-            height: width / 2,
-            width: width / 1.41
+            height: size * 2,
+            width: size * 1.41
         }
     }
 }
-

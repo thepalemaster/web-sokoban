@@ -13,7 +13,7 @@ export function SolveNotifer(props: SolveNotiferProps) {
     setSolved(props.state.solution.levelID);
     return (
       <div className="sokoban-notifer">
-        <span className="sokoban-notifer-message">SOLVED!</span>
+        <h2 className="sokoban-notifer-message">SOLVED!</h2><p>Choose another level:</p>
         <LevelList chooseFn={props.dispatcher} />
       </div>
     );

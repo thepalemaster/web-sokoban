@@ -4,10 +4,11 @@ type BoxImgProps = { scale: number, placed: boolean };
 
 function Box({ scale, placed }: BoxImgProps) {
   const size = scale / 50;
-  const top = 0;
+  const top = 25 * size;//20
   const bottom = 182 * size;
-  const sideUp = 41 * size;
+  const sideUp = 66 * size;//65
   const sideDown = 141 * size;
+  const centerUp = 107 * size;//102
   const left = 0;
   const right = 164 * size;
   const center = 82 * size;
@@ -20,15 +21,15 @@ function Box({ scale, placed }: BoxImgProps) {
       <g stroke="#000" strokeWidth=".5px">
         <path
           fill="#c87137"
-          d={`M${left},${sideUp} ${center},${top} L${right},${sideUp} ${center},${center} L${left},${sideUp}`}
+          d={`M${left},${sideUp} ${center},${top} L${right},${sideUp} ${center},${centerUp} L${left},${sideUp}`}
         ></path>
         <path
           fill="#deaa87"
-          d={`M${left},${sideUp} ${center},${center} L${center},${bottom} ${left},${sideDown} L${left},${sideUp}`}
+          d={`M${left},${sideUp} ${center},${centerUp} L${center},${bottom} ${left},${sideDown} L${left},${sideUp}`}
         ></path>
         <path
           fill="#d38d5f"
-          d={`M${center},${center} ${right},${sideUp} L${right},${sideDown} ${center},${bottom} L${center},${center}`}
+          d={`M${center},${centerUp} ${right},${sideUp} L${right},${sideDown} ${center},${bottom} L${center},${centerUp}`}
         ></path>
       </g>
     </svg>

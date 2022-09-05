@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useRef} from "react";
 import { GameState, MoveResult, getCoordX, getCoordY } from "./setupState";
 import { Direction } from "./levels";
 import { BoxObject } from "./BoxObject";

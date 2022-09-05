@@ -1,22 +1,20 @@
 import React, {useState} from "react";
 import {GameAction} from "./setupState";
 import {ModalHelp} from "./ModalHelp"
+import { ModalViewer } from "./ModalViewer";
 
 type CommandButtonsProps = {
   size: number;
   dispatcher: React.Dispatch<GameAction>;
 };
+export type ModalType = ""|"help"|"chooser"
 
 export function CommandButtons(props: CommandButtonsProps) {
-  const [helpVisibility, setHelpVisibility] = useState(false);
-  const buttonsStyle = {
-    width: props.size / 2,
-    height: props.size * 1.5,
-  };
+  const [typeModal, setModalType] = useState<ModalType>("");
   return (
     <div className="sokoban-commands">
       <button className="sokoban-button"
-        onClick={() => {setHelpVisibility(true)}}
+        onClick={()=>setModalType("help")}
       >
         <svg
           viewBox="6 4 13 13"
@@ -47,7 +45,14 @@ export function CommandButtons(props: CommandButtonsProps) {
             <path d="M5.828 7l2.536 2.536L6.95 10.95 2 6l4.95-4.95 1.414 1.414L5.828 5H13a8 8 0 1 1 0 16H4v-2h9a6 6 0 1 0 0-12H5.828z"/>
         </svg>
       </button>
-      <ModalHelp visible = {helpVisibility} onClose = {() => {setHelpVisibility(false)}} />
+      <button  className="sokoban-button" onClick={()=>setModalType("chooser")}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor">
+           <path d="M8 4h13v2H8V4zM4.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 6.9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM8 11h13v2H8v-2zm0 7h13v2H8v-2z"/>
+          </svg>
+        </button>
+      <ModalViewer type = {typeModal} onClose = {()=>setModalType("")} dispatcher={props.dispatcher} />
     </div>
   )
 }

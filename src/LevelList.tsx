@@ -1,21 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import {levels} from "./levels";
 import {GameAction} from "./setupState";
 import {getSolvedLevels} from "./solutions";
+import {LevelView} from "./LevelView"
 
 type LevelListProps = {
-  chooseFn: React.Dispatch<GameAction>
+  chooseFn: React.Dispatch<GameAction>,
 }
 
 export function LevelList (props: LevelListProps) {
   const status = getSolvedLevels();
   return (
-    <>
+    <div className="sokoban-level-list">
       {levels.map((item, index)=>
-        <label key={index} >
-          <input value={index} name="level" onChange={event=>props.chooseFn({type:"new", payload: parseInt(event.target.value)})} type="radio"/>
-          <div className={status[index]==="1" ? "solved" : ""}>Уровень №{index + 1}</div>
-        </label>)}
-    </>
+        <LevelView key={index} item={item} value={index} status={status[index]} handler={props.chooseFn}/>
+      )}
+    </div>
     )
 } 

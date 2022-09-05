@@ -1,44 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
+import {ModalSokoban} from "./ModalSokoban";
 
 type ModalHelpProps = {
   visible: boolean,
   onClose: ()=>void
 }
 
-
 export function ModalHelp (props: ModalHelpProps) {
-  const closeOnEscape = (event: KeyboardEvent)=> {
-    if (event.key === "Escape") {
-      props.onClose()
-    }
-  }
-  const modalClose = (event: Event)=>{props.onClose();}
-
-  useEffect (()=>{
-    if (props.visible) {
-      document.body.addEventListener("keydown", closeOnEscape);
-      window.addEventListener("scroll", modalClose);
-    } else {
-      return;
-    }
-    return () =>{
-      window.removeEventListener("keydown", closeOnEscape);
-      document.body.removeEventListener("scroll", modalClose);
-    }
-  }, [props.visible])
   return (
-    <div
-      className={`sokoban-modal ${props.visible ? `show` : ``}`}
-      onClick={(event) => {
-        event.stopPropagation();
-        props.onClose();
-      }}
-    >
+    <ModalSokoban visible={props.visible} onClose={props.onClose}>
       <div
-        className="sokoban-help"
+        className="sokoban-modal-window"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="sokoban-help-text">
+        <div>
           <h2>Rules</h2>
           <span>
             Push all the boxes on to the storage locations (green areas). Boxes
@@ -69,10 +44,10 @@ export function ModalHelp (props: ModalHelpProps) {
         </div>
         <div className="sokoban-modal-footer">
           <button onClick={props.onClose} className="sokoban-command-button">
-            Закрыть
+            Close
           </button>
         </div>
       </div>
-    </div>
+    </ModalSokoban>
   );
 }
