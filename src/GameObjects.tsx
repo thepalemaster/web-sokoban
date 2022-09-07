@@ -158,11 +158,15 @@ function applyChanges(props: GameObjectsProps, viewState: ViewState) {
   );
   if (props.state.lastMove.box !== null) {
     const box = viewState.orderByID[props.state.lastMove.box];
-    [box.x, box.y] = newCoordinates(
-      props.state.lastMove.worker,
-      props.step,
-      box
-    );
+    if (box.type === "box") {
+      [box.x, box.y] = newCoordinates(
+        props.state.lastMove.worker,
+        props.step,
+        box
+      );
+      box.placed = props.state.solution.targets.some(
+        (item) => props.state.field[item].box === box.id);
+    }
   }
   applyViewOrder(props, viewState);
 }

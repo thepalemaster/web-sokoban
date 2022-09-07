@@ -15,6 +15,7 @@ html {
 .sokoban-main {
   position: relative;
   overflow: hidden;
+  outline: none;
 }
 
 .sokoban-normalcell {
@@ -70,16 +71,19 @@ html {
 
 .sokoban-button-up{
   grid-area: up;
+  transform: rotateZ(270deg)
 }
 
 .sokoban-button-down{
   grid-area: down;
+  transform: rotateZ(90deg) 
 }
 .sokoban-button-midpoint{
   grid-area: midpoint;
 }
 .sokoban-button-right{
   grid-area: right;
+  transform: rotateZ(180deg) 
 }
 .sokoban-button-left{
   grid-area: left;
@@ -97,43 +101,12 @@ html {
   height: 16vh;
 }
 
-.sokoban-chooser {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  width: 5rem;
-  height: 5rem;
-}
-
 .sokoban-level-list {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   align-content: space-around;
 }
-
-/*.sokoban-chooser label {
-  display: block;
-}
-.sokoban-chooser div {
-  background-color: darkcyan;
-}
-
-.sokoban-chooser input:hover + div{
-  background-color: coral;
-}
-
-.sokoban-chooser input:checked + div{
-  background-color: hotpink;
-}
-
-.sokoban-chooser input:active + div {
-  background-color: crimson;
-}
-
-.sokoban-chooser .solved::before {
-  content:r "[*]";
-}*/
 
 .sokoban-button {
   appearance: none;
@@ -145,7 +118,10 @@ html {
   align-items: center;
   justify-content: center;
 }
-
+.sokoban-button svg {
+  width: 80%;
+  height: 80%;
+}
 .sokoban-button:hover {
   opacity: .7;
 }

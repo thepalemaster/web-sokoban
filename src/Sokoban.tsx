@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useReducer} from 'react';
 import {GameObjects} from './GameObjects';
-import {setupState, initState, getStateCoordX, getStateCoordY, isHighlight} from './setupState';
+import {setupState, initState, getStateCoordX, getStateCoordY, isHighlight, toIndex} from './setupState';
 import {GameBoard} from './GameBoard'
 import {StatisticView} from './StatisticView';
 import {MoveButtons} from './MoveButtons';
@@ -82,9 +82,6 @@ export function Sokoban(props: SokobanProps) {
 
     const mouseBoxHandler = (event: React.MouseEvent) => {
         const tag = (event.target as HTMLElement).tagName.toLowerCase();
-        if (tag === "svg") {
-            return mouseHandler(event);
-        }
         event.stopPropagation()
         event.preventDefault()
         const rect = mainBox.current?.getBoundingClientRect();
@@ -94,12 +91,21 @@ export function Sokoban(props: SokobanProps) {
             x -= rect.x;
             y -= rect.y;
         } 
+        if (tag === "svg") {
+            const firstX = getStateCoordX(x, y, step, maxBoardSize);
+            const firstY = getStateCoordY(x, y, step, maxBoardSize);
+            if(state.field[toIndex(firstX, firstY, state.initalLevel.field.width)].box!==null){
+                return dispatch({type: "box", payload: {x: firstX, y: firstY}});
+            } else {
+                return mouseHandler(event);
+            }
+        }
         let [offsetBoxX, offsetBoxY] = offsetBoxToBase(step);
         x = x - event.nativeEvent.offsetX + offsetBoxX;
         y = y - event.nativeEvent.offsetY + offsetBoxY;
         const targetX = getStateCoordX(x, y, step, maxBoardSize);
         const targetY = getStateCoordY(x, y, step, maxBoardSize);
-        dispatch({type: "box", payload: {x: targetX, y: targetY}}) 
+        dispatch({type: "box", payload: {x: targetX, y: targetY}});
     }
 
     const mouseWorkerHandler = (event: React.MouseEvent) => {
@@ -133,7 +139,7 @@ function getSizeBox (size: number, mode: ViewMode) {
         }
     } else {
         return {
-            height: size * 2,
+            height: size,
             width: size * 1.41
         }
     }

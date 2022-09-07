@@ -143,7 +143,6 @@ export function setupState (state: GameState, action: GameAction): GameState {
     }
 }
 
-
 export function initState (levelID: number) {
     const newState = createState(levels[levelID]);
     newState.solution.levelID = levelID

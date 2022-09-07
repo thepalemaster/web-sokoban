@@ -16,67 +16,71 @@ export function GameBoard (props: GameBoardProps) {
 }
 
 function writeHighlitedCells(props: GameBoardProps, initalCells: Array<JSX.Element>) {
-    if(!props.highlight) return initalCells;
+    if(!props.highlight) return initalCells; 
     const divCells = [...initalCells];
     const {x, y} = props.highlight.entry;
     const max = Math.max(props.heigth, props.width);
     const index = toIndex(x, y, max);
-    const stateIndex = toIndex (x, y, props.width)
+    const stateIndex = toIndex(x, y, props.width)
     let i = 1;
     while (i <= props.highlight.directions.N) {
+        const key = index - max * i;
         if (props.cells[stateIndex - props.width * i] === "E") {
-            divCells[index - max * i] = createCell("H");
+            divCells[key] = createCell("H", -key);
         } else if (props.cells[stateIndex - props.width * i] === "X") {
-            divCells[index - max * i] = createCell("Y");
+            divCells[key] = createCell("Y", -key);
         }
         ++i
     }
     i = 1;
     while (i <= props.highlight.directions.S) {
+        const key = index + max * i;
         if (props.cells[stateIndex + props.width * i] === "E") {
-            divCells[index + max * i] = createCell("H");
+            divCells[key] = createCell("H", -key);
         } else if (props.cells[stateIndex + props.width * i] === "X") {
-            divCells[index + max * i] = createCell("Y");
+            divCells[key] = createCell("Y", -key);
         }
         ++i
     }
     i= 1
     while (i <= props.highlight.directions.W) {
+        const key = index - i;
         if (props.cells[stateIndex - i] === "E") {
-            divCells[index - i] = createCell("H");
+            divCells[key] = createCell("H", -key);
         } else if (props.cells[stateIndex - i] === "X") {
-            divCells[index - i] = createCell("Y");
+            divCells[key] = createCell("Y", -key);
         }
         ++i;
     }
     i = 1;
     while (i <= props.highlight.directions.E) {
+        const key = index + i;
         if (props.cells[stateIndex + i] === "E") {
-            divCells[index + i] = createCell("H");
+            divCells[key] = createCell("H", -key);
         } else if (props.cells[stateIndex + i] === "X") {
-            divCells[index + i] = createCell("Y");
+            divCells[key] = createCell("Y", -key);
         }
         ++i
     }
     return divCells;
 }
 
-function createCell (item: Cell|"H"|"Y") {
+function createCell (item: Cell|"H"|"Y", index:number) {
     switch(item) {
         case " ":
-            return <div className='sokoban-empty'></div>;
+            return <div className='sokoban-empty' key={index}></div>;
             break;
         case "E":
-            return <div className='sokoban-normalcell sokoban-cell'></div>;
+            return <div className='sokoban-normalcell sokoban-cell' key={index}></div>;
             break;
         case "X":
-            return <div className='sokoban-targetcell sokoban-cell'></div>;
+            return <div className='sokoban-targetcell sokoban-cell' key={index}></div>;
             break;
         case "H":
-            return <div className='sokoban-cell-highlight sokoban-cell'></div>;
+            return <div className='sokoban-cell-highlight sokoban-cell' key={index}></div>;
             break;
         case "Y":
-            return <div className='sokoban-targetcell-highlight sokoban-cell'></div>;
+            return <div className='sokoban-targetcell-highlight sokoban-cell' key={index}></div>;
             break;
     }
 }
@@ -94,19 +98,21 @@ function createInitalBoard ({cells, width, heigth, size}:GameBoardProps) {
     let divCells: Array<JSX.Element> = [];
     if (width < heigth) {
         divCells = cells.reduce((acc, item, index)=>{
-            acc.push(createCell(item));
+            acc.push(createCell(item, index));
             if ((index + 1) % width === 0) {
                 const emptyCells = new Array(heigth - width)
-                    .fill(createCell(" "));
+                    .fill(undefined)
+                    .map((itm, i)=>createCell(" ", cells.length + index + i))
                 acc.push(...emptyCells);
-            }            
+            }        
             return acc;
         }, divCells);
     } else {
-        divCells = cells.map(item=>createCell(item));
+        divCells = cells.map((item, index)=>createCell(item, index));
         if (width > heigth) {
             const emptyCells = new Array((width - heigth) * width)
-                .fill(createCell(" "));
+                .fill(undefined)
+                .map((itm, i) => createCell(" ", divCells.length + i));
             divCells.push(...emptyCells);
         }
     }

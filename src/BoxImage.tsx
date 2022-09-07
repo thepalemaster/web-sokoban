@@ -2,7 +2,7 @@ import React from "react";
 
 type BoxImgProps = { scale: number, placed: boolean };
 
-function Box({ scale, placed }: BoxImgProps) {
+function Box({scale, placed}: BoxImgProps) {
   const size = scale / 50;
   const top = 25 * size;//20
   const bottom = 182 * size;
@@ -20,15 +20,15 @@ function Box({ scale, placed }: BoxImgProps) {
     >
       <g stroke="#000" strokeWidth=".5px">
         <path
-          fill="#c87137"
+          fill={placed ? "#c89937" : "#c87137"}
           d={`M${left},${sideUp} ${center},${top} L${right},${sideUp} ${center},${centerUp} L${left},${sideUp}`}
         ></path>
         <path
-          fill="#deaa87"
+          fill={placed ? "#ded287" : "#deaa87"}
           d={`M${left},${sideUp} ${center},${centerUp} L${center},${bottom} ${left},${sideDown} L${left},${sideUp}`}
         ></path>
         <path
-          fill="#d38d5f"
+          fill={placed ? "#d3b55f" : "#d38d5f"}
           d={`M${center},${centerUp} ${right},${sideUp} L${right},${sideDown} ${center},${bottom} L${center},${centerUp}`}
         ></path>
       </g>
