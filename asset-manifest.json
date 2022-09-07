@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/web-sokoban/static/css/main.a1912a33.css",
+    "main.js": "/web-sokoban/static/js/main.16885f73.js",
+    "static/js/787.b23cf098.chunk.js": "/web-sokoban/static/js/787.b23cf098.chunk.js",
+    "index.html": "/web-sokoban/index.html",
+    "main.a1912a33.css.map": "/web-sokoban/static/css/main.a1912a33.css.map",
+    "main.16885f73.js.map": "/web-sokoban/static/js/main.16885f73.js.map",
+    "787.b23cf098.chunk.js.map": "/web-sokoban/static/js/787.b23cf098.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a1912a33.css",
+    "static/js/main.16885f73.js"
+  ]
+}
