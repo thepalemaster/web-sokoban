@@ -2,39 +2,84 @@ import React from "react";
 
 type BoxImgProps = { scale: number, placed: boolean };
 
-function Box({scale, placed}: BoxImgProps) {
+function Box({ scale, placed }: BoxImgProps) {
   const size = scale / 50;
-  const top = 25 * size;//20
   const bottom = 182 * size;
-  const sideUp = 66 * size;//65
-  const sideDown = 141 * size;
-  const centerUp = 107 * size;//102
-  const left = 0;
   const right = 164 * size;
-  const center = 82 * size;
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={right} height={bottom}
-      viewBox={`0 0 ${right} ${bottom}`}
+      width={right}
+      height={bottom}
+      viewBox="0 0 67.164 68.805"
     >
-      <g stroke="#000" strokeWidth=".5px">
+      <g transform="translate(0 3)" stroke="none">
         <path
-          fill={placed ? "#c89937" : "#c87137"}
-          d={`M${left},${sideUp} ${center},${top} L${right},${sideUp} ${center},${centerUp} L${left},${sideUp}`}
+          fill="#deae80"
+          d="M67.163 23.081 33.389 5.626 0 23.081 0 53.081 33.389 68.805 67.163 53.081 67.163 23.081"
         ></path>
         <path
-          fill={placed ? "#ded287" : "#deaa87"}
-          d={`M${left},${sideUp} ${center},${centerUp} L${center},${bottom} ${left},${sideDown} L${left},${sideUp}`}
+          fill={placed ? "#dec280" : "#deae80"}
+          d="M33.389 38.805v30L0 53.081v-30L33.389 38.805"
         ></path>
         <path
-          fill={placed ? "#d3b55f" : "#d38d5f"}
-          d={`M${center},${centerUp} ${right},${sideUp} L${right},${sideDown} ${center},${bottom} L${center},${centerUp}`}
+          fill={placed ? "#d8b97a" : "#d8a57a"}
+          d="M33.389 38.805v30L67.163 53.081v-30L33.389 38.805"
         ></path>
+        <path
+          fill={placed ? "#e3cb86" : "#e3b786"}
+          d="M67.163 23.081 33.389 38.805 0 23.081 33.389 5.626 67.163 23.081"
+        ></path>
+        <g fill="#281407" transform="matrix(1 0 0 -1 -200.318 177.449)">
+          <path d="M243.348 130.733l.474-.691-.233-.136.011-3.67-.477-.273-.01 3.669-.233-.135.468 1.236"></path>
+          <path d="M241.67 130.055l.016-6.07 5.284 3.049-.017 6.07zm-.422-6.833l-.02 7.086 6.165 3.559.019-7.086-6.164-3.56"></path>
+          <path d="M245.831 127.187l.002-.518-3.01-1.737-.002.515 3.01 1.74"></path>
+          <path d="M245.276 131.846l.474-.691-.234-.136.011-3.67-.476-.274-.01 3.669-.234-.134.469 1.236"></path>
+          <path d="M250.77 131.066l.139.074.137.087.004-1.225v-.075l-.278-.161v.076l-.002 1.224"></path>
+          <path d="M252.308 135.905l.006-2.33c.003-.841-.554-1.856-1.268-2.348l-.137-.087-.139-.074c-.716-.331-1.276.039-1.279.88l-.006 2.33 2.823 1.629"></path>
+          <path d="M252.322 130.738v-.322l-2.822-1.63-.001.32 1.273.736v-.076l.278.16v.076l1.272.736"></path>
+          <path d="M248.255 133.856l.017-6.07 5.282 3.05-.018 6.069zm-.423-6.833l-.019 7.087 6.163 3.558.02-7.086-6.164-3.56"></path>
+          <path d="M257.48 138.885c1.049.604 1.904.133 1.927-1.057-.155.118-.383.118-.64-.03s-.486-.413-.64-.71c-.128.097-.304.115-.504.038v.327l-.277-.161.002-.326a1.867 1.867 0 01-.5-.615c-.155.116-.386.116-.643-.031-.256-.148-.486-.414-.64-.708.02 1.21.867 2.668 1.915 3.273"></path>
+          <path d="M257.623 137.453v-.327l.008-2.737c.002-.321.231-.45.51-.29.278.16.503.554.503.874l.277.16c.002-.495-.348-1.103-.78-1.353-.433-.25-.784-.047-.786.45l-.007 2.736-.002.326.277.16"></path>
+          <path d="M254.837 137.657l.02-6.071 5.281 3.05-.017 6.07zm-.42-6.833l-.02 7.087 6.164 3.559.02-7.088-6.165-3.558"></path>
+        </g>
+        <g transform="matrix(1 0 0 -1 -200.318 177.449)">
+          <path
+            fill="#131111"
+            d="M221.73 141.257l9.007-5.201v-4.21l-9.008 5.2v4.21"
+          ></path>
+          <path
+            fill="#fff"
+            d="M221.894 140.975l8.678-5.011v-3.833l-8.678 5.01v3.834"
+          ></path>
+          <path
+            fill="#131111"
+            d="M225.905 138.22v-.192l-3.697 2.134v.193l3.697-2.134"
+          ></path>
+          <path
+            fill="#131111"
+            d="M230.266 135.703v-.193l-3.73 2.153.001.194 3.729-2.154"
+          ></path>
+          <path
+            fill="#131111"
+            d="M223.932 136.592v-.193l-1.732 1v.193l1.732-1"
+          ></path>
+          <path
+            fill="#131111"
+            d="M230.258 132.94l-.001-.193-5.694 3.287.001.194 5.694-3.288"
+          ></path>
+          <path
+            fill="#131111"
+            d="M227.869 135.705l-.001-.194-5.664 3.272v.193l5.665-3.271"
+          ></path>
+          <path
+            fill="#131111"
+            d="M230.262 134.322v-.192l-1.762 1.018v.193l1.762-1.02"
+          ></path>
+        </g>
       </g>
     </svg>
   );
-
 }
 
 export const BoxImage = React.memo(Box)

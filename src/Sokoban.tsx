@@ -139,7 +139,7 @@ function getSizeBox (size: number, mode: ViewMode) {
         }
     } else {
         return {
-            height: size,
+            height: size * 1.41,
             width: size * 1.41
         }
     }
