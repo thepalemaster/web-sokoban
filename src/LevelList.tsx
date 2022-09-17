@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {levels} from "./levels";
 import {GameAction} from "./setupState";
 import {getSolvedLevels} from "./solutions";

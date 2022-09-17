@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {GameAction} from "./setupState";
-import {ModalHelp} from "./ModalHelp"
 import { ModalViewer } from "./ModalViewer";
 
 type CommandButtonsProps = {

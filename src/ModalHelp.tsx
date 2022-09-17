@@ -24,13 +24,6 @@ export function ModalHelp (props: ModalHelpProps) {
           <span>
             You can move the player by using the arrow keys or by using
             direction buttons in right bottom corner.
-            <br />
-            Undo last move: button
-            <br />
-            Reset level: button
-            <br />
-            Get this help: button
-            <br />
           </span>
           <h3>Playing by mouse (or touch)</h3>
           <span>

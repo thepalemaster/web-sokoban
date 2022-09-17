@@ -117,6 +117,7 @@ export function setupState (state: GameState, action: GameAction): GameState {
                 }
             }
             return {...state, effectUI: activePath};
+            break;
         case "noeffect": 
             return {...state, effectUI: null}
             break;

@@ -210,6 +210,92 @@ export const levels: Array<Level> = [
   },
   {
     field:{
+      width: 4,
+      heigth: 5,
+      cells: [
+        " ", "X", "E", "E",
+        "E", "E", "E", "E",
+        "E", "X", "X", "E",
+        " ", "E", "E", "X",
+        " ", "E", "E", "E",
+      ]
+    },
+    boxes: [
+      {
+        position: {
+          x: 2,
+          y: 2
+        }
+      },
+      {
+        position: {
+          x: 3,
+          y: 3
+        }
+      },
+      {
+        position: {
+          x: 2,
+          y: 3
+        }
+      },
+      {
+        position: {
+          x: 4,
+          y: 2
+        }
+      }
+    ],
+    worker: {
+      position: {
+        x: 1,
+        y: 2
+      },
+      direction: "E"
+    }
+  },
+  {
+    field:{
+      width: 5,
+      heigth: 5,
+      cells: [
+        " ", " ", "E", "E", "E",
+        "E", "X", "E", "E", "E",
+        "E", "E", "E", "E", "E",
+        " ", " ", "E", " ", "X",
+        " ", " ", "E", "E", "X"
+      ]
+    },
+    boxes: [
+      {
+        position: {
+          x: 2,
+          y: 2
+        }
+      },
+      {
+        position: {
+          x: 3,
+          y: 3
+        }
+      },
+      {
+        position: {
+          x: 2,
+          y: 3
+        }
+      },
+    ],
+    worker: {
+      position: {
+        x: 1,
+        y: 2
+      },
+      direction: "S"
+    }
+  },
+  {
+    field:{
       width: 12,
       heigth: 8,
       cells: [

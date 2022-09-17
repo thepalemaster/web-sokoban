@@ -63,8 +63,8 @@ export function pathFinder(state: GameState, target: Position, path: Array<Posit
         const result = pathFinder(state, target, [...path, possible[index]]);
         if (result !== null) {
                 let pos = -1;
-                for (; index < possible.length; index++) {
-                    const i = result.findIndex(item=>equalPositions(possible[index], item));
+                for (let currentIndex = index; currentIndex < possible.length; currentIndex++) {
+                    const i = result.findIndex(item=>equalPositions(possible[currentIndex], item));
                     pos = i > pos ? i : pos;
                 }
             return pos > 0 ? path.concat(result.slice(pos)) : result
